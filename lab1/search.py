@@ -95,26 +95,27 @@ def depthFirstSearch(problem: SearchProblem):
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
 
-    start_state = problem.getStartState()
+    init_coords = problem.getStartState()
     queue = util.Queue()
-    visited = list()
-    path = {start_state: list()}
-    queue.push(start_state)
+    visited_cells = []
+    path = {init_coords : []}
+    queue.push(init_coords)
 
     while not queue.isEmpty():
-        state = queue.pop()
+        curr_coords = queue.pop()
 
-        if problem.isGoalState(state):
-            return path[state]
+        if problem.isGoalState(curr_coords):
+            return path[curr_coords]
 
-        if state not in visited:
-            next_nodes = problem.getSuccessors(state)
-            for successor in next_nodes:
-                if not successor[0] in path:
-                    path[successor[0]] = path[state] + [successor[1]]
-                    queue.push(successor[0])
-
-        visited.append(state)
+        if curr_coords in visited_cells:
+            continue
+            
+        for next_coords, direction, _ in problem.getSuccessors(curr_coords):
+            if not next_coords in path:
+                path[next_coords] = path[curr_coords] + [direction]
+                queue.push(next_coords)
+        
+        visited_cells.append(curr_coords)
 
 
 def uniformCostSearch(problem: SearchProblem):
@@ -131,10 +132,63 @@ def nullHeuristic(state, problem=None):
     return 0
 
 
-def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
+def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    init_coords = problem.getStartState()
+    priority_queue = util.PriorityQueue()
+    visited = []
+    path = {init_coords : [[], 0]} ## coords: [dir, cost]
+    priority_queue.push(init_coords, path[init_coords][1]) ## coords, cost
+
+    while not priority_queue.isEmpty():
+        curr_coords = priority_queue.pop()
+           
+        if problem.isGoalState(curr_coords):
+            return path[curr_coords][0]
+
+        if curr_coords in visited: 
+            continue
+            
+        for next_coords, next_direction, next_cost in problem.getSuccessors(curr_coords):
+            
+            if next_coords in visited:
+                continue
+                
+            new_cost = path[curr_coords][1] + next_cost + heuristic(next_coords, problem)
+
+            if not next_coords in path or new_cost < path[next_coords][1]:
+                path[next_coords] = [path[curr_coords][0] + [next_direction], path[curr_coords][1] + next_cost]
+                priority_queue.update(next_coords, path[next_coords][1] + heuristic(next_coords, problem))
+                        
+        visited.append(curr_coords)
+        
+    
+def greedySearch(problem, heuristic=nullHeuristic):
+    """Search the node that has the lowest heuristic."""
+    init_coords = problem.getStartState()
+    priority_queue = util.PriorityQueue()
+    visited = []
+    path = {init_coords : []} ## coords: [dir]
+    priority_queue.push(init_coords, heuristic(init_coords, problem)) ## state, cost
+
+    while not priority_queue.isEmpty():
+        curr_coords = priority_queue.pop()
+        
+        if problem.isGoalState(curr_coords):
+            return path[curr_coords]
+
+        if curr_coords in visited: 
+            continue
+            
+        for next_coords, next_direction, _ in problem.getSuccessors(curr_coords):
+                 
+            if next_coords in visited:
+                continue
+
+            path[next_coords] = path[curr_coords] + [next_direction]
+            priority_queue.update(next_coords, heuristic(next_coords, problem))
+                        
+        visited.append(curr_coords)
 
 
 # Abbreviations
@@ -142,3 +196,4 @@ bfs = breadthFirstSearch
 dfs = depthFirstSearch
 astar = aStarSearch
 ucs = uniformCostSearch
+gs = greedySearch
