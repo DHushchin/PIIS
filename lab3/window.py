@@ -78,8 +78,8 @@ class MainWindow(QWidget):
         Moves must be made according to the rules of chess because
         illegal moves are suppressed.
         """
-        # if not self.is_user_move:
-        #     return
+        if not self.is_user_move:
+            return
         
         if event.x() <= self.boardSize and event.y() <= self.boardSize:
             if event.buttons() == Qt.LeftButton:
@@ -100,10 +100,13 @@ class MainWindow(QWidget):
                                 self.check_state()
                                 self.is_game_over()
                                 
-                                self.is_user_move = False
+                                
                                 QApplication.processEvents()
                                 self.makeAgentMove()
-                                self.is_user_move = True
+
+                                self.drawBoard()
+                                self.check_state()
+                                self.is_game_over()
                                 
                             piece = None
                             coordinates = None
@@ -124,16 +127,14 @@ class MainWindow(QWidget):
     
     
     def makeAgentMove(self):
-        heuristic = Heuristic(self.board, chess.BLACK)
-        
-        agent = NegamaxAgent(self.board, self.board.turn, 3, heuristic)
-        # agent = NegaScoutAgent(self.board, self.board.turn, 5, heuristic)
-        # agent = PvsAgent(self.board, self.board.turn, 5, heuristic)
+        self.is_user_move = False    
+        heuristic = Heuristic(self.board, self.board.turn)
+        # agent = NegamaxAgent(self.board, 3, heuristic)
+        # agent = NegaScoutAgent(self.board, 3, heuristic)
+        agent = PvsAgent(self.board, 3, heuristic)
         
         move = agent.get_move()
+        print(move, '\n')
         self.board.push(move)
         self.drawBoard()
-        self.check_state()
-        self.is_game_over()
-        
-        return move
+        self.is_user_move = True

@@ -1,38 +1,41 @@
 import chess
 
+
 class Heuristic:
     def __init__(self, board, color):
         self.board = board
         self.color = color
+
+    def _get_balance(self):
+        white = self.board.occupied_co[chess.WHITE]
+        black = self.board.occupied_co[chess.BLACK]
         
+        pawns = chess.popcount(white & self.board.pawns) \
+                - chess.popcount(black & self.board.pawns)
+                
+        knights = chess.popcount(white & self.board.knights) \
+                  - chess.popcount(black & self.board.knights)
+                  
+        bishops = chess.popcount(white & self.board.bishops) \
+                  - chess.popcount(black & self.board.bishops)
+                  
+        rooks = chess.popcount(white & self.board.rooks) \
+                - chess.popcount(black & self.board.rooks)
+                
+        queens = chess.popcount(white & self.board.queens) \
+                 - chess.popcount(black & self.board.queens)
+                 
+        kings = chess.popcount(white & self.board.kings) \
+                - chess.popcount(black & self.board.kings)
+
+        return pawns * 1 + knights * 3 + bishops * 3 + rooks * 5 + queens * 9 + kings * 100
+    
     def evaluate(self):
-        score = 0
-        for square in chess.SQUARES:
-            piece = self.board.piece_at(square)
-            if piece is not None:
-                if piece.color == self.color:
-                    score += self.getPieceValue(piece)
-                else:
-                    score -= self.getPieceValue(piece)
-        return score
-    
-    
-    def getPieceValue(self, piece):
-        if piece.piece_type == chess.PAWN:
-            return 1
-        elif piece.piece_type == chess.KNIGHT:
-            return 3
-        elif piece.piece_type == chess.BISHOP:
-            return 3
-        elif piece.piece_type == chess.ROOK:
-            return 5
-        elif piece.piece_type == chess.QUEEN:
-            return 9
-        elif piece.piece_type == chess.KING:
-            return 100
-        else:
-            return 0
-        
-         
-    def __str__(self):
-        return "Heuristic"
+        white = self.board.occupied_co[chess.WHITE]
+        black = self.board.occupied_co[chess.BLACK]
+        score = self._get_balance() * (white - black)
+
+        if (self.board.turn == self.color):
+            return score
+
+        return -score
