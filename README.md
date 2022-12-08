@@ -25,6 +25,13 @@
 * Chess game desktop GUI
 * Monte Carlo Tree Search
 
+# Lab 5
+[Gridworld code](https://inst.eecs.berkeley.edu/~cs188/fa22/projects/proj3/) was used to implement:
+* Value Iteration
+* Policies
+* Q-Learning
+* Epsilon Greedy
+
 
 # Installation
 
