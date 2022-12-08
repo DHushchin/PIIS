@@ -20,6 +20,19 @@
 * NegaScout
 * Principal Variation Search
 
+# Lab 4
+[PyQT5](https://doc.qt.io/qtforpython/) and [chess](https://python-chess.readthedocs.io/en/latest/) libs were used to implement:
+* Chess game desktop GUI
+* Monte Carlo Tree Search
+
+# Lab 5
+[Gridworld code](https://inst.eecs.berkeley.edu/~cs188/fa22/projects/proj3/) was used to implement:
+* Value Iteration
+* Policies
+* Q-Learning
+* Epsilon Greedy
+
+
 # Installation
 
 ### Clone project
