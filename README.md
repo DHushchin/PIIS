@@ -20,6 +20,12 @@
 * NegaScout
 * Principal Variation Search
 
+# Lab 4
+[PyQT5](https://doc.qt.io/qtforpython/) and [chess](https://python-chess.readthedocs.io/en/latest/) libs were used to implement:
+* Chess game desktop GUI
+* Monte Carlo Tree Search
+
+
 # Installation
 
 ### Clone project
